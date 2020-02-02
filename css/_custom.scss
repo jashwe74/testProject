@@ -1,0 +1,7 @@
+body{
+  @extend .scrolling
+}
+
+.scrolling{
+  @extend .scroll-primary
+}

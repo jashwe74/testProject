@@ -1,0 +1,132 @@
+@mixin fontFace($family,$src,$weight: normal,$style: normal) {
+  @font-face {
+    font-family: $family;
+    src: url('#{$src}.eot'); // IE9 compat
+    src: url('#{$src}.eot?#iefix') format('embedded-opentype'), // IE8 and below
+    url('#{$src}.woff') format('woff'), // standards
+    url('#{$src}.woff2') format('woff2'), // standards
+    url('#{$src}.ttf') format('truetype'); // Safari, Android, iOS
+    font-style: $style;
+    font-weight: $weight;
+  }
+}
+
+@mixin supportBrowsers($element,$property) {
+  -webkit-#{$element}: $property;
+  -moz-#{$element}: $property;
+  -ms-#{$element}: $property;
+  -o-#{$element}: $property;
+  #{$element}: $property;
+}
+
+@each $color, $value in $theme-colors {
+  .scroll-#{$color} {
+
+    &::-webkit-scrollbar-track {
+      background: lighten($value, 30%);
+
+      &:hover {
+        background: lighten($value, 20%);
+      }
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: $value;
+
+      &:hover {
+        background: darken($value, 20%);
+      }
+    }
+
+  }
+}
+
+$overflows: auto, hidden, scroll, visible, overlay;
+@each $value in $overflows {
+
+  .overflow-x-#{$value} {
+    overflow-x: $value !important;
+  }
+
+  .overflow-y-#{$value} {
+    overflow-y: $value !important;
+  }
+
+  .overflow-#{$value}{
+    overflow: $value !important;
+  }
+
+}
+
+@each $breakpoint in map-keys($grid-breakpoints) {
+  @include media-breakpoint-up($breakpoint) {
+    $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+    @each $prop, $abbrev in (width: w, height: h) {
+      @each $size, $length in $sizes {
+        .#{$abbrev}#{$infix}-#{$size} { #{$prop}: $length !important; }
+      }
+    }
+  }
+}
+
+$z-depth-base:0.5rem;
+
+::-webkit-scrollbar {
+  width: 0.5rem;
+  height: 0.5rem;
+}
+
+::-webkit-scrollbar-track {
+  @extend .rounded
+}
+
+::-webkit-scrollbar-thumb {
+  @extend .rounded
+}
+
+$offsets:left,right,bottom,top;
+
+@each $offset in $offsets {
+  .offset-#{$offset}-0{
+    #{$offset}: 0 !important;
+  }
+  .offset-#{$offset}-auto{
+    #{$offset}: auto !important;
+  }
+}
+
+.offset-x-0{
+  @extend .offset-left-0,.offset-right-0
+}
+
+.offset-y-0{
+  @extend .offset-bottom-0,.offset-top-0
+}
+
+.offset-all-0{
+  @extend .offset-x-0,.offset-y-0
+}
+
+.offset-x-auto{
+  @extend .offset-left-auto,.offset-right-auto
+}
+
+.offset-y-auto{
+  @extend .offset-bottom-auto,.offset-top-auto
+}
+
+.offset-all-auto{
+  @extend .offset-x-auto,.offset-y-auto
+}
+
+.rounded-top-left{
+  border-radius: $border-radius 0 0 0 !important;
+}
+
+.rounded-top-right{
+  border-radius: 0 $border-radius 0 0 !important;
+}
+
+.border-transparent{
+  border-color: $list-group-border-color !important;
+}

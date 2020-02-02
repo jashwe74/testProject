@@ -1,0 +1,617 @@
+
+.rtl, .rtl * {
+  direction: rtl !important;
+  text-align: right !important;
+}
+
+.ltr, .ltr * {
+  direction: ltr !important;
+  text-align: left !important;
+}
+
+// stylelint-disable declaration-no-important
+
+// Margin and Padding
+@mixin spacing($start,$end) {
+  @each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+      $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+      @each $prop, $abbrev in (margin: m, padding: p) {
+        @each $size, $length in $spacers {
+          .#{$abbrev}s#{$infix}-#{$size},
+          .#{$abbrev}x#{$infix}-#{$size} {
+            #{$prop}-#{$start}: $length !important;
+          }
+          .#{$abbrev}e#{$infix}-#{$size},
+          .#{$abbrev}x#{$infix}-#{$size} {
+            #{$prop}-#{$end}: $length !important;
+          }
+        }
+      }
+
+      @each $size, $length in $spacers {
+        @if $size != 0 {
+          .ms#{$infix}-n#{$size},
+          .mx#{$infix}-n#{$size} {
+            margin-#{$start}: -$length !important;
+          }
+          .me#{$infix}-n#{$size},
+          .mx#{$infix}-n#{$size} {
+            margin-#{$end}: -$length !important;
+          }
+        }
+      }
+
+      .ms#{$infix}-auto,
+      .mx#{$infix}-auto {
+        margin-#{$start}: auto !important;
+      }
+      .me#{$infix}-auto,
+      .mx#{$infix}-auto {
+        margin-#{$end}: auto !important;
+      }
+    }
+  }
+}
+
+@mixin aligning($start,$end){
+  @each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+      $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+      .text#{$infix}-start   { text-align: #{$start} !important; }
+      .text#{$infix}-end  { text-align: #{$end} !important; }
+    }
+  }
+}
+
+html:lang(en) {
+  @include spacing(left, right);
+  @include aligning(left, right);
+
+}
+
+html:lang(fa) {
+  @include spacing(right, left);
+  @include aligning(right, left);
+
+  //region reboot 
+
+  * {
+    direction: rtl;
+  }
+
+  body {
+    text-align: right;
+  }
+
+  dd {
+    margin-left: unset;
+    margin-right: 0;
+  }
+
+  caption {
+    text-align: right;
+  }
+
+  //endregion
+
+  //region type 
+
+  .list-inline-item {
+    &:not(:last-child) {
+      margin-left: $list-inline-padding;
+      margin-right: unset;
+    }
+  }
+
+  //endregion
+
+  //region forms 
+
+  .form-check {
+    padding-left: unset;
+    padding-right: $form-check-input-gutter;
+  }
+
+  .form-check-input {
+    margin-left: unset;
+    margin-right: -$form-check-input-gutter;
+  }
+
+  .form-check-inline {
+    padding-left: unset;
+    padding-right: 0;
+    margin-right: unset;
+    margin-left: $form-check-inline-margin-x;
+
+    .form-check-input {
+      margin-right: 0;
+      margin-left: $form-check-inline-input-margin-x;
+    }
+  }
+
+  @each $state, $data in $form-validation-states {
+    @include form-validation-state($state, map-get($data, color), map-get($data, icon));
+  }
+
+  .form-inline {
+    @include media-breakpoint-up(sm) {
+      .form-check {
+        padding-left: unset;
+        padding-right: 0;
+      }
+      .form-check-input {
+        margin-right: 0;
+        margin-left: $form-check-input-margin-x;
+      }
+    }
+  }
+
+  // endregion
+
+  //region dropdown 
+
+  .dropdown-menu {
+    right: 0;
+    float: right;
+    text-align: right;
+    left: unset;
+  }
+
+  .dropdown-menu {
+    &[x-placement^="top"],
+    &[x-placement^="right"],
+    &[x-placement^="bottom"],
+    &[x-placement^="left"] {
+      left: auto;
+      right: unset;
+    }
+  }
+
+
+  @each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+      $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+      .dropdown-menu#{$infix}-left {
+        right: auto;
+        left: 0;
+      }
+
+      .dropdown-menu#{$infix}-right {
+        right: 0;
+        left: auto;
+      }
+    }
+  }
+
+
+  //endregion
+
+  //region button group
+
+
+  .btn-group {
+    > .btn:not(:first-child),
+    > .btn-group:not(:first-child) {
+      margin-left: unset;
+      margin-right: -$btn-border-width;
+    }
+
+    > .btn:not(:first-child),
+    > .btn-group:not(:first-child) > .btn {
+      @include border-left-radius($btn-border-radius);
+      @include border-right-radius(0);
+    }
+
+    > .btn:not(:last-child):not(.dropdown-toggle),
+    > .btn-group:not(:last-child) > .btn {
+      @include border-right-radius($btn-border-radius);
+      @include border-left-radius(0);
+    }
+  }
+
+  //endregion
+
+  //region input group 
+
+  .input-group {
+    > .form-control,
+    > .form-control-plaintext,
+    > .custom-select,
+    > .custom-file {
+      + .form-control,
+      + .custom-select,
+      + .custom-file {
+        margin-left: unset;
+        margin-right: -$input-border-width;
+      }
+    }
+  }
+
+  .input-group-prepend,
+  .input-group-append {
+    .btn + .btn,
+    .btn + .input-group-text,
+    .input-group-text + .input-group-text,
+    .input-group-text + .btn {
+      margin-left: unset;
+      margin-right: -$input-border-width;
+    }
+  }
+
+
+  .input-group-lg > .custom-select,
+  .input-group-sm > .custom-select {
+    padding-left: $custom-select-padding-x + $custom-select-indicator-padding;
+    padding-right: unset;
+  }
+
+
+  .input-group > .input-group-prepend > .btn,
+  .input-group > .input-group-prepend > .input-group-text,
+  .input-group > .input-group-append:not(:last-child) > .btn,
+  .input-group > .input-group-append:not(:last-child) > .input-group-text,
+  .input-group > .input-group-append:last-child > .btn:not(:last-child):not(.dropdown-toggle),
+  .input-group > .input-group-append:last-child > .input-group-text:not(:last-child) {
+    @include border-right-radius(unset);
+    @include border-left-radius(0);
+
+  }
+
+  .input-group > .input-group-append > .btn,
+  .input-group > .input-group-append > .input-group-text,
+  .input-group > .input-group-prepend:not(:first-child) > .btn,
+  .input-group > .input-group-prepend:not(:first-child) > .input-group-text,
+  .input-group > .input-group-prepend:first-child > .btn:not(:first-child),
+  .input-group > .input-group-prepend:first-child > .input-group-text:not(:first-child) {
+    @include border-left-radius(unset);
+    @include border-right-radius(0);
+  }
+
+  //endregion
+
+  //region Custom forms 
+  .custom-control {
+    padding-left: 0;
+    padding-right: $custom-control-gutter + $custom-control-indicator-size;
+  }
+
+  .custom-control-inline {
+    margin-right: 0;
+    margin-left: $custom-control-spacer-x;
+  }
+
+  .custom-control-label {
+    &::before {
+      left: 0;
+      right: -($custom-control-gutter + $custom-control-indicator-size);
+    }
+
+    &::after {
+      left: 0;
+      right: -($custom-control-gutter + $custom-control-indicator-size);
+    }
+  }
+
+  .custom-switch {
+    padding-left: 0;
+    padding-right: $custom-switch-width + $custom-control-gutter;
+
+    .custom-control-label {
+      &::before {
+        left: 0;
+        right: -($custom-switch-width + $custom-control-gutter);
+      }
+
+      &::after {
+        left: 0;
+        right: calc(#{-($custom-switch-width + $custom-control-gutter)} + #{$custom-control-indicator-border-width * 2});
+      }
+    }
+  }
+
+
+  $custom-select-background: $custom-select-indicator no-repeat left $custom-select-padding-x center / $custom-select-bg-size; // Used so we can have multiple background elements (e.g., arrow and feedback icon)
+
+
+  .custom-select {
+    padding: $custom-select-padding-y $custom-select-padding-x $custom-select-padding-y ($custom-select-padding-x + $custom-select-indicator-padding);
+    background: $custom-select-background;
+    background-color: $custom-select-bg;
+    @include supportBrowsers(appearance,none);
+
+    &[multiple],
+    &[size]:not([size="1"]) {
+      padding-right: 0;
+      padding-left: $custom-select-padding-x;
+    }
+  }
+
+  .custom-select-sm {
+    padding-right: $custom-select-padding-x-sm;
+    padding-left: 0;
+  }
+
+  .custom-select-lg {
+    padding-right: $custom-select-padding-x-lg;
+    padding-left: 0;
+  }
+
+  .custom-file-label {
+    &::after {
+      left: -1px;
+      right: unset;
+      @include border-radius($custom-file-border-radius 0 0 $custom-file-border-radius);
+    }
+  }
+
+  .custom-range {
+    &::-ms-fill-upper {
+      margin-right: 0;
+      margin-left: 15px;
+    }
+  }
+
+  //endregion 
+
+  //region nav
+
+  .nav {
+    padding-right: 0;
+    padding-left: unset;
+  }
+
+  //endregion
+
+  //region navbar
+
+  .navbar-brand {
+    margin-left: $navbar-padding-x;
+    margin-right: unset;
+  }
+
+
+  .navbar-nav {
+    padding-left: unset;
+    padding-right: 0;
+  }
+
+  //endregion
+
+  //region card
+
+  .card-link {
+    + .card-link {
+      margin-right: $card-spacer-x;
+      margin-left: unset;
+    }
+  }
+
+
+  .card-group {
+    @include media-breakpoint-up(sm) {
+      > .card {
+        @if $enable-rounded {
+          &:not(:last-child) {
+            @include border-right-radius(unset);
+            @include border-left-radius(0);
+
+            .card-img-top,
+            .card-header {
+              border-top-right-radius: unset;
+              border-top-left-radius: 0;
+            }
+
+            .card-img-bottom,
+            .card-footer {
+              border-top-right-radius: unset;
+              border-top-left-radius: 0;
+            }
+          }
+
+          &:not(:first-child) {
+            @include border-left-radius(unset);
+            @include border-right-radius(0);
+
+            .card-img-top,
+            .card-header {
+              // stylelint-disable-next-line property-blacklist
+              border-top-left-radius: unset;
+              border-top-right-radius: 0;
+            }
+
+            .card-img-bottom,
+            .card-footer {
+              // stylelint-disable-next-line property-blacklist
+              border-bottom-left-radius: unset;
+              border-bottom-right-radius: 0;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  //endregion
+
+  //region breadcrumb
+
+  .breadcrumb-item {
+    + .breadcrumb-item {
+      padding-left: unset;
+      padding-right: $breadcrumb-item-padding;
+    }
+  }
+
+  //endregion
+
+  //region pagination
+
+  .page-link {
+    margin-left: unset;
+    margin-right: -$pagination-border-width;
+  }
+
+  .page-item {
+    &:first-child {
+      .page-link {
+        margin-left: unset;
+        margin-right: 0;
+        @include border-left-radius(unset);
+        @include border-right-radius($border-radius);
+      }
+    }
+
+    &:last-child {
+      .page-link {
+        @include border-right-radius(unset);
+        @include border-left-radius($border-radius);
+      }
+    }
+  }
+
+  //endregion
+
+  //region alert
+
+  .alert-dismissible {
+    padding-right: unset;
+    padding-left: $close-font-size + $alert-padding-x * 2;
+
+    // Adjust close link position
+    .close {
+      right: unset;
+      left: 0;
+    }
+  }
+
+  //endregion
+
+  //region list group
+
+
+  .list-group {
+    padding-left: unset;
+    padding-right: 0;
+  }
+
+
+  @each $breakpoint in map-keys($grid-breakpoints) {
+    @include media-breakpoint-up($breakpoint) {
+      $infix: breakpoint-infix($breakpoint, $grid-breakpoints);
+
+      .list-group-horizontal#{$infix} {
+        .list-group-item {
+          margin-right: unset;
+          margin-left: -$list-group-border-width;
+
+          &:first-child {
+            @include border-left-radius(unset);
+            @include border-right-radius($list-group-border-radius);
+            @include border-top-right-radius(unset);
+            @include border-top-left-radius(0);
+          }
+
+          &:last-child {
+            margin-left: unset;
+            margin-right: 0;
+            @include border-right-radius(unset);
+            @include border-left-radius($list-group-border-radius);
+            @include border-bottom-left-radius(unset);
+            @include border-bottom-right-radius(0);
+          }
+        }
+      }
+    }
+  }
+
+
+  //endregion
+
+  //region close 
+
+  .close {
+    float: left;
+  }
+
+  //endregion
+
+  //region  modal 
+
+  .modal {
+    right: 0;
+    left: unset;
+  }
+
+  .modal-backdrop {
+    right: 0;
+    left: unset;
+  }
+
+  .modal-header {
+    align-items: flex-start;
+
+    .close {
+      margin: (-$modal-header-padding-y) auto (-$modal-header-padding-y) (-$modal-header-padding-x);
+    }
+  }
+
+  .modal-footer {
+    justify-content: flex-end;
+
+    > :not(:last-child) {
+      margin-left: .25rem;
+    }
+
+    > :not(:first-child) {
+      margin-right: .25rem;
+    }
+  }
+
+  //endregion
+
+  //region popover
+
+  .popover {
+    left: unset;
+    right: 0;
+  }
+
+
+  .bs-popover-bottom {
+    .popover-header::before {
+      left: unset;
+      right: 50%;
+      margin-left: unset;
+      margin-right: -$popover-arrow-width / 2;
+    }
+  }
+
+  //endregion
+
+  //region carousel
+
+  .carousel-item {
+    float: right;
+    margin-left: unset;
+    margin-right: -100%;
+  }
+
+  .carousel-indicators {
+    padding-left: 0;
+  }
+
+  //endregion
+
+  //region spinner
+
+  .spinner-border {
+    border-right-color: unset;
+    border-left-color: transparent;
+  }
+
+  //endregion
+
+}
